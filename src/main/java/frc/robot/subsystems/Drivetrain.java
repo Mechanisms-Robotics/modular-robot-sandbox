@@ -4,40 +4,56 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
   SwerveDriveKinematics kinematics;
   ChassisSpeeds desiredChassisSpeeds;
-
+  private final StructArrayPublisher<SwerveModuleState> publisher;
+  
   public Drivetrain(
     Translation2d frontLeftModuleLocation,
     Translation2d frontRightModuleLocation,
     Translation2d backLeftModuleLocation,
     Translation2d backRightModuleLocation) {
-
+      
       this.kinematics = new SwerveDriveKinematics(
         frontLeftModuleLocation,
         frontRightModuleLocation,
         backLeftModuleLocation,
         backRightModuleLocation);
         
-      }
+      publisher = NetworkTableInstance.getDefault().getStructArrayTopic(
+        "/SwerveStates", SwerveModuleState.struct).publish();
+    }
       
-      public void setDesiredState(ChassisSpeeds desiredChassisSpeeds) {
-        this.desiredChassisSpeeds = desiredChassisSpeeds;
-      }
+    public void setDesiredState(ChassisSpeeds desiredChassisSpeeds) {
+      this.desiredChassisSpeeds = desiredChassisSpeeds;
+    }
+    
+    public ChassisSpeeds getDesiredState() {
+      return this.desiredChassisSpeeds;
+    }
+    
+    @Override
+    public void periodic() {
+      SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
       
-      public ChassisSpeeds getDesiredState() {
-        return this.desiredChassisSpeeds;
-      }
-      
-      @Override
-      public void periodic() {
-        SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
-        // TODO Working here
-      }
+      SwerveModuleState frontLeftState = moduleStates[0];
+      SwerveModuleState frontRightState = moduleStates[1];
+      SwerveModuleState backLeftState = moduleStates[2];
+      SwerveModuleState backRightState = moduleStates[3];
+
+      publisher.set(new SwerveModuleState[] {
+        frontLeftState,
+        frontRightState,
+        backLeftState,
+        backRightState
+      });
+    }
 
 
 
@@ -74,5 +90,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    this.periodic();
   }
 }
