@@ -25,8 +25,10 @@ public class Drivetrain extends SubsystemBase {
         frontRightModuleLocation,
         backLeftModuleLocation,
         backRightModuleLocation);
+      
+      this.desiredChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
         
-      publisher = NetworkTableInstance.getDefault().getStructArrayTopic(
+      this.publisher = NetworkTableInstance.getDefault().getStructArrayTopic(
         "/SwerveStates", SwerveModuleState.struct).publish();
     }
       
