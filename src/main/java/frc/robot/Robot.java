@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -108,6 +109,9 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
+    ChassisSpeeds speeds = new ChassisSpeeds(
+      0.5, 0.5, 1.0);
+    this.m_robotContainer.drivetrain.setDesiredState(speeds);
     posePub.set(new Pose3d(5.0, 2.0, 0.0, new Rotation3d()));
   }
 }

@@ -27,7 +27,7 @@ public class RobotContainer {
   Translation2d backLeftModuleLocation = new Translation2d(-1.0, -1.0);
   Translation2d backRightModuleLocation = new Translation2d(1.0, -1.0);
 
-  private final Drivetrain m_exampleSubsystem = new Drivetrain(
+  public final Drivetrain drivetrain = new Drivetrain(
     frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation
   );
 
@@ -52,12 +52,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    new Trigger(drivetrain::exampleCondition)
+        .onTrue(new ExampleCommand(drivetrain));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_driverController.b().whileTrue(drivetrain.exampleMethodCommand());
   }
 
   /**
@@ -67,6 +67,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return Autos.exampleAuto(drivetrain);
   }
 }
