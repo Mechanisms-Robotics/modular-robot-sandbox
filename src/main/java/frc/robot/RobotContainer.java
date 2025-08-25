@@ -22,10 +22,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
-  Translation2d frontLeftModuleLocation = new Translation2d(-1.0, 1.0);
-  Translation2d frontRightModuleLocation = new Translation2d(1.0, 1.0);
-  Translation2d backLeftModuleLocation = new Translation2d(-1.0, -1.0);
-  Translation2d backRightModuleLocation = new Translation2d(1.0, -1.0);
+  Translation2d frontLeftModuleLocation = new Translation2d(1.0, 1.0);
+  Translation2d frontRightModuleLocation = new Translation2d(1.0, -1.0);
+  Translation2d backLeftModuleLocation = new Translation2d(-1.0, 1.0);
+  Translation2d backRightModuleLocation = new Translation2d(-1.0, -1.0);
 
   public final Drivetrain drivetrain = new Drivetrain(
     frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation

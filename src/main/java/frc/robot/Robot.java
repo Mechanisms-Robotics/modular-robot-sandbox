@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -104,14 +103,16 @@ public class Robot extends TimedRobot {
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+    posePub.set(new Pose3d(5.0, 2.0, 0.0, new Rotation3d()));
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
+  //double radiansPerSecond = 0.0;
   public void simulationPeriodic() {
     ChassisSpeeds speeds = new ChassisSpeeds(
-      0.5, 0.5, 1.0);
+      0.0, 0., 1.0);
     this.m_robotContainer.drivetrain.setDesiredState(speeds);
-    posePub.set(new Pose3d(5.0, 2.0, 0.0, new Rotation3d()));
   }
 }

@@ -14,6 +14,9 @@ public class Drivetrain extends SubsystemBase {
   ChassisSpeeds desiredChassisSpeeds;
   private final StructArrayPublisher<SwerveModuleState> publisher;
   
+  /**
+   * Remember that the front of the robot is +X and the left side of the robot is +Y.
+   */
   public Drivetrain(
     Translation2d frontLeftModuleLocation,
     Translation2d frontRightModuleLocation,
