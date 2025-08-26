@@ -10,11 +10,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
-  private static final int FRONT_LEFT_STEERING_CAN_ID = 1;
-  private static final int FRONT_LEFT_DRIVE_CAN_ID = 5;
+  private static final int FRONT_LEFT_STEERING_CAN_ID = 5;
+  private static final int FRONT_LEFT_DRIVE_CAN_ID = 1;
 
-  private static final int FRONT_RIGHT_STEERING_CAN_ID = 2;
-  private static final int FRONT_RIGHT_DRIVE_CAN_ID = 6;
+  private static final int FRONT_RIGHT_STEERING_CAN_ID = 6;
+  private static final int FRONT_RIGHT_DRIVE_CAN_ID = 2;
 
   private static final int BACK_LEFT_STEERING_CAN_ID = 4;
   private static final int BACK_LEFT_DRIVE_CAN_ID = 8;
