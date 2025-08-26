@@ -10,62 +10,85 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
+  private static final int FRONT_LEFT_STEERING_CAN_ID = 0;
+  private static final int FRONT_LEFT_DRIVE_CAN_ID = 0;
+
+  private static final int FRONT_RIGHT_STEERING_CAN_ID = 0;
+  private static final int FRONT_RIGHT_DRIVE_CAN_ID = 0;
+
+  private static final int BACK_LEFT_STEERING_CAN_ID = 0;
+  private static final int BACK_LEFT_DRIVE_CAN_ID = 0;
+
+  private static final int BACK_RIGHT_STEERING_CAN_ID = 0;
+  private static final int BACK_RIGHT_DRIVE_CAN_ID = 0;
+
   SwerveDriveKinematics kinematics;
   ChassisSpeeds desiredChassisSpeeds;
   private final StructArrayPublisher<SwerveModuleState> publisher;
-  
+
+  private final SwerveModule frontLeftModule = new SwerveModule(
+      FRONT_LEFT_STEERING_CAN_ID, FRONT_LEFT_DRIVE_CAN_ID);
+
+  private final SwerveModule frontRightModule = new SwerveModule(
+      FRONT_RIGHT_STEERING_CAN_ID, FRONT_RIGHT_DRIVE_CAN_ID);
+
+  private final SwerveModule backLeftModule = new SwerveModule(
+      BACK_LEFT_STEERING_CAN_ID, BACK_LEFT_DRIVE_CAN_ID);
+
+  private final SwerveModule backRightModule = new SwerveModule(
+    BACK_RIGHT_STEERING_CAN_ID, BACK_RIGHT_DRIVE_CAN_ID);
+
   /**
-   * Remember that the front of the robot is +X and the left side of the robot is +Y.
+   * Remember that the front of the robot is +X and the left side of the robot is
+   * +Y.
    */
   public Drivetrain(
-    Translation2d frontLeftModuleLocation,
-    Translation2d frontRightModuleLocation,
-    Translation2d backLeftModuleLocation,
-    Translation2d backRightModuleLocation) {
-      
-      this.kinematics = new SwerveDriveKinematics(
+      Translation2d frontLeftModuleLocation,
+      Translation2d frontRightModuleLocation,
+      Translation2d backLeftModuleLocation,
+      Translation2d backRightModuleLocation) {
+
+    this.kinematics = new SwerveDriveKinematics(
         frontLeftModuleLocation,
         frontRightModuleLocation,
         backLeftModuleLocation,
         backRightModuleLocation);
-      
-      this.desiredChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-        
-      this.publisher = NetworkTableInstance.getDefault().getStructArrayTopic(
-        "/SwerveStates", SwerveModuleState.struct).publish();
-    }
-      
-    public void setDesiredState(ChassisSpeeds desiredChassisSpeeds) {
-      this.desiredChassisSpeeds = desiredChassisSpeeds;
-    }
-    
-    public ChassisSpeeds getDesiredState() {
-      return this.desiredChassisSpeeds;
-    }
-    
-    @Override
-    public void periodic() {
-      SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
-      
-      SwerveModuleState frontLeftState = moduleStates[0];
-      SwerveModuleState frontRightState = moduleStates[1];
-      SwerveModuleState backLeftState = moduleStates[2];
-      SwerveModuleState backRightState = moduleStates[3];
 
-      publisher.set(new SwerveModuleState[] {
+    this.desiredChassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
+
+    this.publisher = NetworkTableInstance.getDefault().getStructArrayTopic(
+        "/SwerveStates", SwerveModuleState.struct).publish();
+  }
+
+  public void setDesiredState(ChassisSpeeds desiredChassisSpeeds) {
+    this.desiredChassisSpeeds = desiredChassisSpeeds;
+  }
+
+  public ChassisSpeeds getDesiredState() {
+    return this.desiredChassisSpeeds;
+  }
+
+  @Override
+  public void periodic() {
+    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
+
+    SwerveModuleState frontLeftState = moduleStates[0];
+    SwerveModuleState frontRightState = moduleStates[1];
+    SwerveModuleState backLeftState = moduleStates[2];
+    SwerveModuleState backRightState = moduleStates[3];
+
+    publisher.set(new SwerveModuleState[] {
         frontLeftState,
         frontRightState,
         backLeftState,
         backRightState
-      });
-    }
+    });
 
-
-
-
-
-
-
+    frontLeftModule.setModuleState(frontLeftState);
+    frontRightModule.setModuleState(frontRightState);
+    backLeftModule.setModuleState(backLeftState);
+    backRightModule.setModuleState(backRightState);
+  }
 
   /**
    * Example command factory method.
@@ -82,7 +105,8 @@ public class Drivetrain extends SubsystemBase {
   }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
+   * An example method querying a boolean state of the subsystem (for example, a
+   * digital sensor).
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
@@ -90,7 +114,6 @@ public class Drivetrain extends SubsystemBase {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-
 
   @Override
   public void simulationPeriodic() {
