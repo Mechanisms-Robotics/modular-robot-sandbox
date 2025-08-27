@@ -12,31 +12,35 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Drivetrain extends SubsystemBase {
   private static final int FRONT_LEFT_STEERING_CAN_ID = 5;
   private static final int FRONT_LEFT_DRIVE_CAN_ID = 1;
+  private static final int FRONT_LEFT_ENCODER_CAN_ID = 1;
 
   private static final int FRONT_RIGHT_STEERING_CAN_ID = 6;
   private static final int FRONT_RIGHT_DRIVE_CAN_ID = 2;
+  private static final int FRONT_RIGHT_ENCODER_CAN_ID = 3;
 
   private static final int BACK_LEFT_STEERING_CAN_ID = 4;
   private static final int BACK_LEFT_DRIVE_CAN_ID = 8;
+  private static final int BACK_LEFT_ENCODER_CAN_ID = 4;
 
   private static final int BACK_RIGHT_STEERING_CAN_ID = 3;
   private static final int BACK_RIGHT_DRIVE_CAN_ID = 7;
+  private static final int BACK_RIGHT_ENCODER_CAN_ID = 3;
 
   SwerveDriveKinematics kinematics;
   ChassisSpeeds desiredChassisSpeeds;
   private final StructArrayPublisher<SwerveModuleState> publisher;
 
   private final SwerveModule frontLeftModule = new SwerveModule(
-      FRONT_LEFT_STEERING_CAN_ID, FRONT_LEFT_DRIVE_CAN_ID);
+      FRONT_LEFT_STEERING_CAN_ID, FRONT_LEFT_DRIVE_CAN_ID, FRONT_LEFT_ENCODER_CAN_ID);
 
   private final SwerveModule frontRightModule = new SwerveModule(
-      FRONT_RIGHT_STEERING_CAN_ID, FRONT_RIGHT_DRIVE_CAN_ID);
+      FRONT_RIGHT_STEERING_CAN_ID, FRONT_RIGHT_DRIVE_CAN_ID, FRONT_RIGHT_ENCODER_CAN_ID);
 
   private final SwerveModule backLeftModule = new SwerveModule(
-      BACK_LEFT_STEERING_CAN_ID, BACK_LEFT_DRIVE_CAN_ID);
+      BACK_LEFT_STEERING_CAN_ID, BACK_LEFT_DRIVE_CAN_ID, BACK_LEFT_ENCODER_CAN_ID);
 
   private final SwerveModule backRightModule = new SwerveModule(
-    BACK_RIGHT_STEERING_CAN_ID, BACK_RIGHT_DRIVE_CAN_ID);
+    BACK_RIGHT_STEERING_CAN_ID, BACK_RIGHT_DRIVE_CAN_ID, BACK_RIGHT_ENCODER_CAN_ID);
 
   /**
    * Remember that the front of the robot is +X and the left side of the robot is

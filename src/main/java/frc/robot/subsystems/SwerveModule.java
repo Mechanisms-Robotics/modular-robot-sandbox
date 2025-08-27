@@ -3,6 +3,7 @@ import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.reduxrobotics.sensors.canandmag.Canandmag;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -11,10 +12,13 @@ public class SwerveModule {
 
     private final TalonFX steeringMotor;
     private final TalonFX driveMotor;
+
+    private final Canandmag encoder;
   
-    public SwerveModule(int steeringMotorCANId, int driveMotorCANId) {
+    public SwerveModule(int steeringMotorCANId, int driveMotorCANId, int encoderCANId) {
         this.steeringMotor = new TalonFX(steeringMotorCANId);
         this.driveMotor = new TalonFX(driveMotorCANId);
+        this.encoder = new Canandmag(encoderCANId);
     }
 
     public void setModuleState(SwerveModuleState state) {
