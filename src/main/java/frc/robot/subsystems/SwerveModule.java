@@ -11,8 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
     private static final double WHEEL_RADIUS_METERS = 0.03; // ESTIMATED
+    private static final double STEERING_GEAR_RATIO = 150.0/7.0; // from SDS website
+    private static final double DRIVE_GEAR_RATIO = 6.12; // L3  TODO: check we are using L3
 
-    private final int steeringMotorCANId; // FOR TEST PURPOSES ONLY
+    private final int steeringMotorCANId;
 
     private final TalonFX steeringMotor;
     private final TalonFX driveMotor;
@@ -26,29 +28,44 @@ public class SwerveModule {
         this.driveMotor = new TalonFX(driveMotorCANId);
         this.encoder = new Canandmag(encoderCANId);
 
-        var configs = new TalonFXConfiguration();
-        configs.Slot0.kP = 0.002;
-        configs.Slot0.kI = 0.0;
-        configs.Slot0.kD = 0.0;
-        configs.Slot0.kV = 0.0; // feedforward term
-        this.driveMotor.getConfigurator().apply(configs);
+        var steeringConfigs = new TalonFXConfiguration();
+        steeringConfigs.Slot0.kP = 0.002;
+        steeringConfigs.Slot0.kI = 0.0;
+        steeringConfigs.Slot0.kD = 0.0;
+        steeringConfigs.Slot0.kV = 0.0; // feedforward term
+        this.steeringMotor.getConfigurator().apply(steeringConfigs);
+
+        var driveConfigs = new TalonFXConfiguration();
+        driveConfigs.Slot0.kP = 0.002;
+        driveConfigs.Slot0.kI = 0.0;
+        driveConfigs.Slot0.kD = 0.0;
+        driveConfigs.Slot0.kV = 0.0; // feedforward term
+        this.driveMotor.getConfigurator().apply(driveConfigs);
+    }
+
+    public void syncSteeringMotorAndCANEncoder() {
+        double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
+        steeringMotor.setPosition(encPosition); // same units as encoder position
     }
 
     public void setModuleState(SwerveModuleState state) {        
         // set the position of the steering motor
+        // NOTE: This doesn't make sense because there is gearing TODOTODOTODO
         double positionInRotations = state.angle.getDegrees() / 360.0;
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
 
         // set the speed of the drive motor
-        double angularVelocity = state.speedMetersPerSecond / WHEEL_RADIUS_METERS;
-        ControlRequest driveControlRequest = new VelocityDutyCycle(angularVelocity);
+        double wheelCircumference = 2 * Math.PI * WHEEL_RADIUS_METERS;
+        double wheelRotationsPerSecond = state.speedMetersPerSecond / wheelCircumference;
+        double motorRotationsPerSecond = wheelRotationsPerSecond * DRIVE_GEAR_RATIO;
+        ControlRequest driveControlRequest = new VelocityDutyCycle(motorRotationsPerSecond);
         this.driveMotor.setControl(driveControlRequest);
 
         // Debug code
         SmartDashboard.putNumber(
             "Swerve States/" + this.steeringMotorCANId + "/positionInRotations", positionInRotations);
         SmartDashboard.putNumber(
-            "Swerve States/" + this.steeringMotorCANId + "/angularVelocity", angularVelocity);
+            "Swerve States/" + this.steeringMotorCANId + "/motorRotationsPerSecond", motorRotationsPerSecond);
     }
 }
