@@ -45,7 +45,9 @@ public class SwerveModule {
 
     public void syncSteeringMotorAndCANEncoder() {
         double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
-        steeringMotor.setPosition(encPosition); // same units as encoder position
+        // TODO This won't work. Multiply by STEERING_GEAR_RATIO and TICKS_PER_REV and set the
+        // position in ticks based on that....
+        //steeringMotor.setPosition(encPosition); // same units as encoder position
     }
 
     public void setModuleState(SwerveModuleState state) {        
