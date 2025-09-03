@@ -45,15 +45,12 @@ public class SwerveModule {
 
     public void syncSteeringMotorAndCANEncoder() {
         double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
-        // TODO This won't work. Multiply by STEERING_GEAR_RATIO and TICKS_PER_REV and set the
-        // position in ticks based on that....
-        //steeringMotor.setPosition(encPosition); // same units as encoder position
+        steeringMotor.setPosition(STEERING_GEAR_RATIO * encPosition);
     }
 
     public void setModuleState(SwerveModuleState state) {        
         // set the position of the steering motor
-        // NOTE: This doesn't make sense because there is gearing TODOTODOTODO
-        double positionInRotations = state.angle.getDegrees() / 360.0;
+        double positionInRotations = STEERING_GEAR_RATIO * state.angle.getDegrees() / 360.0;
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
 
