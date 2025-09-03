@@ -72,6 +72,13 @@ public class Drivetrain extends SubsystemBase {
     return this.desiredChassisSpeeds;
   }
 
+  public void setModulesToEncoders() {
+    this.frontLeftModule.setModuleToEncoder();
+    this.frontRightModule.setModuleToEncoder();
+    this.backLeftModule.setModuleToEncoder();
+    this.backRightModule.setModuleToEncoder();
+  }
+
   @Override
   public void periodic() {
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(desiredChassisSpeeds);
@@ -88,10 +95,10 @@ public class Drivetrain extends SubsystemBase {
         backRightState
     });
 
-    frontLeftModule.setModuleState(frontLeftState);
-    frontRightModule.setModuleState(frontRightState);
-    backLeftModule.setModuleState(backLeftState);
-    backRightModule.setModuleState(backRightState);
+    this.frontLeftModule.setModuleState(frontLeftState);
+    this.frontRightModule.setModuleState(frontRightState);
+    this.backLeftModule.setModuleState(backLeftState);
+    this.backRightModule.setModuleState(backRightState);
   }
 
   /**

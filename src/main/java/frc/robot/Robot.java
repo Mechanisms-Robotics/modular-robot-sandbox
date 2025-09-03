@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.time.Duration;
+import java.time.Instant;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -58,8 +61,19 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {}
 
+  public Instant lastSwerveModuleSetTime = Instant.MAX;
+  private final static long SWERVE_SET_FREQUECY_SECONDS = 1;
+
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    Instant now = Instant.now();
+    Duration durationSinceLast = Duration.between(this.lastSwerveModuleSetTime, now);
+    if (durationSinceLast.compareTo(Duration.ofSeconds(SWERVE_SET_FREQUECY_SECONDS)) > 0) {
+      m_robotContainer.setSwerveModulesToEncoders();
+      System.out.println("Zeroed!");
+      lastSwerveModuleSetTime = now;
+    }
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

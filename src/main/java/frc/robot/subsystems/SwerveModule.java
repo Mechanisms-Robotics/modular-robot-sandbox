@@ -29,7 +29,7 @@ public class SwerveModule {
         this.encoder = new Canandmag(encoderCANId);
 
         var steeringConfigs = new TalonFXConfiguration();
-        steeringConfigs.Slot0.kP = 0.002;
+        steeringConfigs.Slot0.kP = 0.004;
         steeringConfigs.Slot0.kI = 0.0;
         steeringConfigs.Slot0.kD = 0.0;
         steeringConfigs.Slot0.kV = 0.0; // feedforward term
@@ -43,7 +43,7 @@ public class SwerveModule {
         this.driveMotor.getConfigurator().apply(driveConfigs);
     }
 
-    public void syncSteeringMotorAndCANEncoder() {
+    public void setModuleToEncoder() {
         double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
         steeringMotor.setPosition(STEERING_GEAR_RATIO * encPosition);
     }
@@ -62,9 +62,13 @@ public class SwerveModule {
         this.driveMotor.setControl(driveControlRequest);
 
         // Debug code
+
         SmartDashboard.putNumber(
             "Swerve States/" + this.steeringMotorCANId + "/positionInRotations", positionInRotations);
         SmartDashboard.putNumber(
             "Swerve States/" + this.steeringMotorCANId + "/motorRotationsPerSecond", motorRotationsPerSecond);
+        
+        SmartDashboard.putNumber(
+            "Swerve States/" + this.steeringMotorCANId + "/position", steeringMotor.getPosition().getValueAsDouble());
     }
 }
