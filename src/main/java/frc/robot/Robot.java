@@ -101,13 +101,17 @@ public class Robot extends TimedRobot {
     }
 
     // ****** TEMPORARY CODE TO TEST DRIVETRAIN
-    m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
-      0.5, 0.0, 0.0));
+  //  m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
+     // 0.5, 0.0, 0.0));
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    ChassisSpeeds driveSpeed = new ChassisSpeeds(Math.pow(m_robotContainer.m_driverController.getLeftY(), 3), Math.pow(m_robotContainer.m_driverController.getLeftX(),3), 0);
+    m_robotContainer.drivetrain.setDesiredState(driveSpeed);
+    System.out.println(m_robotContainer.m_driverController.getLeftY());
+  }
 
   @Override
   public void testInit() {
@@ -129,8 +133,8 @@ public class Robot extends TimedRobot {
   @Override
   //double radiansPerSecond = 0.0;
   public void simulationPeriodic() {
-    ChassisSpeeds speeds = new ChassisSpeeds(
-      0.0, 0., 1.0);
-    this.m_robotContainer.drivetrain.setDesiredState(speeds);
+   // ChassisSpeeds speeds = new ChassisSpeeds(
+     // 1, 0, 0);
+   // this.m_robotContainer.drivetrain.setDesiredState(speeds);
   }
 }
