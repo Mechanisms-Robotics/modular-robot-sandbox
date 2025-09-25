@@ -66,12 +66,20 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
+    
+    // ****** TEMPORARY CODE TO TEST DRIVETRAIN
+    m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
+      0.0, 0.0, 0.0));
+
+
+
+
     Instant now = Instant.now();
     Duration durationSinceLast = Duration.between(this.lastSwerveModuleSetTime, now);
     if (durationSinceLast.compareTo(Duration.ofSeconds(SWERVE_SET_FREQUECY_SECONDS)) > 0) {
-      m_robotContainer.setSwerveModulesToEncoders();
-      System.out.println("Zeroed!");
-      lastSwerveModuleSetTime = now;
+      this.m_robotContainer.setSwerveModulesToEncoders();
+      //System.out.println("Zeroed!");
+      this.lastSwerveModuleSetTime = now;
     }
   }
 

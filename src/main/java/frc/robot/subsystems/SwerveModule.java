@@ -10,6 +10,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SwerveModule {
+    private static final boolean OUTPUT_TO_SMART_DASH = true;
+
     private static final double WHEEL_RADIUS_METERS = 0.03; // ESTIMATED
     private static final double STEERING_GEAR_RATIO = 150.0/7.0; // from SDS website
     private static final double DRIVE_GEAR_RATIO = 6.12; // L3  TODO: check we are using L3
@@ -61,14 +63,24 @@ public class SwerveModule {
         ControlRequest driveControlRequest = new VelocityDutyCycle(motorRotationsPerSecond);
         this.driveMotor.setControl(driveControlRequest);
 
-        // Debug code
+        // this is probably not the best place for this code, but this is a sandbox project
 
-        SmartDashboard.putNumber(
-            "Swerve States/" + this.steeringMotorCANId + "/positionInRotations", positionInRotations);
-        SmartDashboard.putNumber(
-            "Swerve States/" + this.steeringMotorCANId + "/motorRotationsPerSecond", motorRotationsPerSecond);
-        
-        SmartDashboard.putNumber(
-            "Swerve States/" + this.steeringMotorCANId + "/position", steeringMotor.getPosition().getValueAsDouble());
+        if (OUTPUT_TO_SMART_DASH) {
+            SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/positionInRotations", positionInRotations);
+            SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/motorRotationsPerSecond", motorRotationsPerSecond);
+            
+            double positionOfSteering = steeringMotor.getPosition().getValueAsDouble();
+            positionOfSteering /= STEERING_GEAR_RATIO;
+            SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/positionOfSteering", positionOfSteering);
+
+            double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
+            steeringMotor.setPosition(STEERING_GEAR_RATIO * encPosition);
+    
+            SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/encoderPosition", encPosition);        
+        }
     }
 }

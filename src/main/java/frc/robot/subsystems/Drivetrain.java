@@ -9,6 +9,27 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+/**
+ * SOME NEXT STEPS -- 9 Sept 2025 -- Odom
+ * 
+ * CHECKING THE STEERING MOTORS
+ * 
+ * Physically set all of the swerve modules to forward
+ * Observe encoderPosition in Smart Dashboard, that it changes when the wheels are manually steered
+ *    DONE (BL offline but others show change)
+ * Observe positionOfSteering as well
+ *    DONE (position changes for BR)
+ * Zero encoders using the software suite. positionOfSteering should also go to zero
+ *    DONE (both zero)
+ * Turn the wheels (steering) a quarter turn. Observe that encoderPosition and positionOfSteering go to 0.25
+ *    DONE (both now as expected)
+ * 
+ * CHECKING THE DRIVE MOTORS
+ * 
+ * For this check, I'll want to output the motor's position in ticks or whatever and make sure that if
+ *   I turn it by hand half a rotation the number of ticks matches the math in the SwerveModule.java file.
+ */
+
 public class Drivetrain extends SubsystemBase {
   private static final int FRONT_LEFT_STEERING_CAN_ID = 5;
   private static final int FRONT_LEFT_DRIVE_CAN_ID = 1;
@@ -16,7 +37,7 @@ public class Drivetrain extends SubsystemBase {
 
   private static final int FRONT_RIGHT_STEERING_CAN_ID = 6;
   private static final int FRONT_RIGHT_DRIVE_CAN_ID = 2;
-  private static final int FRONT_RIGHT_ENCODER_CAN_ID = 3;
+  private static final int FRONT_RIGHT_ENCODER_CAN_ID = 2;
 
   private static final int BACK_LEFT_STEERING_CAN_ID = 4;
   private static final int BACK_LEFT_DRIVE_CAN_ID = 8;
