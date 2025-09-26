@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SwerveModule {
     private static final boolean OUTPUT_TO_SMART_DASH = true;
 
-    private static final double WHEEL_RADIUS_METERS = 0.03; // ESTIMATED
+    private static final double WHEEL_RADIUS_METERS = 0.0508; // from the internet
     private static final double STEERING_GEAR_RATIO = 150.0/7.0; // from SDS website
-    private static final double DRIVE_GEAR_RATIO = 6.12; // L3  TODO: check we are using L3
+    private static final double DRIVE_GEAR_RATIO = 6.75; // L2 from SDS website
 
     private final int steeringMotorCANId;
 
@@ -31,14 +31,14 @@ public class SwerveModule {
         this.encoder = new Canandmag(encoderCANId);
 
         var steeringConfigs = new TalonFXConfiguration();
-        steeringConfigs.Slot0.kP = 0.004;
+        steeringConfigs.Slot0.kP = 0.02;
         steeringConfigs.Slot0.kI = 0.0;
         steeringConfigs.Slot0.kD = 0.0;
         steeringConfigs.Slot0.kV = 0.0; // feedforward term
         this.steeringMotor.getConfigurator().apply(steeringConfigs);
 
         var driveConfigs = new TalonFXConfiguration();
-        driveConfigs.Slot0.kP = 0.002;
+        driveConfigs.Slot0.kP = 0.02;
         driveConfigs.Slot0.kI = 0.0;
         driveConfigs.Slot0.kD = 0.0;
         driveConfigs.Slot0.kV = 0.0; // feedforward term
@@ -67,20 +67,17 @@ public class SwerveModule {
 
         if (OUTPUT_TO_SMART_DASH) {
             SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/positionInRotations", positionInRotations);
-            SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/motorRotationsPerSecond", motorRotationsPerSecond);
+                "Swerve States/" + this.steeringMotorCANId + "/Drive/demand_wheelRotationsPerSecond", wheelRotationsPerSecond);
             
-            double positionOfSteering = steeringMotor.getPosition().getValueAsDouble();
-            positionOfSteering /= STEERING_GEAR_RATIO;
             SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/positionOfSteering", positionOfSteering);
+                "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations", positionInRotations);
+            double positionOfSteering = steeringMotor.getPosition().getValueAsDouble() / STEERING_GEAR_RATIO;
+            SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/Steering/actual_positionOfSteering", positionOfSteering);
 
             double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
-            steeringMotor.setPosition(STEERING_GEAR_RATIO * encPosition);
-    
             SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/encoderPosition", encPosition);        
+                "Swerve States/" + this.steeringMotorCANId + "/external_encoderPosition", encPosition);        
         }
     }
 }

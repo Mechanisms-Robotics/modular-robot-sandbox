@@ -10,9 +10,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
- * SOME NEXT STEPS -- 9 Sept 2025 -- Odom
+ * STARTUP AND TUNING
  * 
- * CHECKING THE STEERING MOTORS
+ * Verify all steering encoders are zeroed (gears on the right)
+ * Rough in P for drive and steering on blocks
+ * 
+ * 
+ * CHECKING DRIVE MOTORS
+ * 
+ * 
+ * 
+ * 
+ * 
+ * STEERING LOGIC TESTED AS BELOW -- 25 Sept 2025 -- Odom
  * 
  * Physically set all of the swerve modules to forward
  * Observe encoderPosition in Smart Dashboard, that it changes when the wheels are manually steered
@@ -24,10 +34,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Turn the wheels (steering) a quarter turn. Observe that encoderPosition and positionOfSteering go to 0.25
  *    DONE (both now as expected)
  * 
- * CHECKING THE DRIVE MOTORS
- * 
- * For this check, I'll want to output the motor's position in ticks or whatever and make sure that if
- *   I turn it by hand half a rotation the number of ticks matches the math in the SwerveModule.java file.
  */
 
 public class Drivetrain extends SubsystemBase {

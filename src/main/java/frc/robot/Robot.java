@@ -61,26 +61,25 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {}
 
-  public Instant lastSwerveModuleSetTime = Instant.MAX;
+  public Instant lastSwerveModuleSetTime = Instant.MIN;
   private final static long SWERVE_SET_FREQUECY_SECONDS = 1;
 
   @Override
   public void disabledPeriodic() {
-    
-    // ****** TEMPORARY CODE TO TEST DRIVETRAIN
-    m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
-      0.0, 0.0, 0.0));
+      // ****** TEMPORARY CODE TO TEST DRIVETRAIN
+      m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
+        0.0, 0.0, 0.0));
 
 
 
-
-    Instant now = Instant.now();
-    Duration durationSinceLast = Duration.between(this.lastSwerveModuleSetTime, now);
-    if (durationSinceLast.compareTo(Duration.ofSeconds(SWERVE_SET_FREQUECY_SECONDS)) > 0) {
-      this.m_robotContainer.setSwerveModulesToEncoders();
-      //System.out.println("Zeroed!");
-      this.lastSwerveModuleSetTime = now;
-    }
+      Instant now = Instant.now();
+      Duration duration = Duration.between(this.lastSwerveModuleSetTime, now);
+      //System.out.println("Duration:" + duration);
+      if (duration.compareTo(Duration.ofSeconds(SWERVE_SET_FREQUECY_SECONDS)) >= 0) {
+        this.m_robotContainer.setSwerveModulesToEncoders();
+        //System.out.println("Zeroed!");
+        this.lastSwerveModuleSetTime = now;
+      }
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
@@ -110,7 +109,7 @@ public class Robot extends TimedRobot {
 
     // ****** TEMPORARY CODE TO TEST DRIVETRAIN
     m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
-      0.5, 0.0, 0.0));
+      0.1, 0.0, 0.0));
   }
 
   /** This function is called periodically during operator control. */
