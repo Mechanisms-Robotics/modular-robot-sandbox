@@ -14,13 +14,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * 
  * Verify all steering encoders are zeroed (gears on the right)
  * Rough in P for drive and steering on blocks
+ * Sanity check outputs vs. inputs (do the wheels seem to move correctly?)
+ * Experiment with P on the ground (with hardcoded values for velocities or whatever)
  * 
  * 
  * CHECKING DRIVE MOTORS
  * 
- * 
- * 
- * 
+ * On 26 Sept Odom checked the desired velocity against the demand (wheelRotationsPerSecond)
+ * against the actual output. The actual output is 19.6 where I expect about 28 cm / s.
+ * The demand (wheelRotationsPerSecond) is correct. So either the gear ration is incorrect
+ * or there is a tuning issue / issue meeting the demand.
  * 
  * STEERING LOGIC TESTED AS BELOW -- 25 Sept 2025 -- Odom
  * 

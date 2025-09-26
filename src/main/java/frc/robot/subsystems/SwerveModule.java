@@ -31,7 +31,7 @@ public class SwerveModule {
         this.encoder = new Canandmag(encoderCANId);
 
         var steeringConfigs = new TalonFXConfiguration();
-        steeringConfigs.Slot0.kP = 0.02;
+        steeringConfigs.Slot0.kP = 0.04;
         steeringConfigs.Slot0.kI = 0.0;
         steeringConfigs.Slot0.kD = 0.0;
         steeringConfigs.Slot0.kV = 0.0; // feedforward term
@@ -57,9 +57,10 @@ public class SwerveModule {
         this.steeringMotor.setControl(steeringControlRequest);
 
         // set the speed of the drive motor
+        double FUDGE_FACTOR = 1.6; // TODO: What is wrong?
         double wheelCircumference = 2 * Math.PI * WHEEL_RADIUS_METERS;
         double wheelRotationsPerSecond = state.speedMetersPerSecond / wheelCircumference;
-        double motorRotationsPerSecond = wheelRotationsPerSecond * DRIVE_GEAR_RATIO;
+        double motorRotationsPerSecond = wheelRotationsPerSecond * DRIVE_GEAR_RATIO * FUDGE_FACTOR;
         ControlRequest driveControlRequest = new VelocityDutyCycle(motorRotationsPerSecond);
         this.driveMotor.setControl(driveControlRequest);
 
