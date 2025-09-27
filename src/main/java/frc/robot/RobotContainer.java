@@ -45,10 +45,9 @@ public class RobotContainer {
     drivetrain.setDefaultCommand(
       new RunCommand(
           () -> {
-              // Get forward/backward and strafe inputs
               double forward = -controller.getLeftY(); // Negative to match FRC convention
               double strafe = controller.getLeftX();
-              double rotation = -controller.getRightX();
+              double rotation = controller.getRightX();
 
               // Apply deadbands and scaling
               final double DEADBAND = 0.04;
@@ -57,13 +56,13 @@ public class RobotContainer {
               rotation = Math.abs(rotation) > DEADBAND ? rotation : 0.0;
 
               // Scale to max speed
-              double maxSpeedMetersPerSec = 3.0; // Set your max speed
-              double maxAngularSpeedRadPerSec = Math.PI; // Set your max rotation speed
+              double MAX_SPEED_METERS_PER_SEC = 1.0; // Set your max speed
+              double MAX_ANGULAR_RAD_PER_SEC = Math.PI; // Set your max rotation speed
 
               ChassisSpeeds speeds = new ChassisSpeeds(
-                  forward * maxSpeedMetersPerSec,
-                  strafe * maxSpeedMetersPerSec,
-                  rotation * maxAngularSpeedRadPerSec
+                  forward * MAX_SPEED_METERS_PER_SEC,
+                  strafe * MAX_SPEED_METERS_PER_SEC,
+                  rotation * MAX_ANGULAR_RAD_PER_SEC
               );
 
               // Pass to your swerve subsystem
