@@ -106,10 +106,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    // ****** TEMPORARY CODE TO TEST DRIVETRAIN
-    m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
-      0.1, 0.1, 0.1));
   }
 
   /** This function is called periodically during operator control. */

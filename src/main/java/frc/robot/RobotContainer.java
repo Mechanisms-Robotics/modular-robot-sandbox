@@ -4,14 +4,13 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,8 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  
   Translation2d frontLeftModuleLocation = new Translation2d(1.0, 1.0);
   Translation2d frontRightModuleLocation = new Translation2d(1.0, -1.0);
   Translation2d backLeftModuleLocation = new Translation2d(-1.0, 1.0);
@@ -31,10 +28,9 @@ public class RobotContainer {
     frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation
   );
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
+  private static final int CONTROLLER_PORT = 0;
+  private final CommandPS4Controller controller = new CommandPS4Controller(CONTROLLER_PORT);
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -45,24 +41,38 @@ public class RobotContainer {
     this.drivetrain.setModulesToEncoders();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(drivetrain::exampleCondition)
-        .onTrue(new ExampleCommand(drivetrain));
+    drivetrain.setDefaultCommand(
+      new RunCommand(
+          () -> {
+              // Get forward/backward and strafe inputs
+              double forward = -controller.getLeftY(); // Negative to match FRC convention
+              double strafe = controller.getLeftX();
+              double rotation = -controller.getRightX();
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(drivetrain.exampleMethodCommand());
-  }
+              // Apply deadbands and scaling
+              final double DEADBAND = 0.04;
+              forward = Math.abs(forward) > DEADBAND ? forward : 0.0;
+              strafe = Math.abs(strafe) > DEADBAND ? strafe : 0.0;
+              rotation = Math.abs(rotation) > DEADBAND ? rotation : 0.0;
+
+              // Scale to max speed
+              double maxSpeedMetersPerSec = 3.0; // Set your max speed
+              double maxAngularSpeedRadPerSec = Math.PI; // Set your max rotation speed
+
+              ChassisSpeeds speeds = new ChassisSpeeds(
+                  forward * maxSpeedMetersPerSec,
+                  strafe * maxSpeedMetersPerSec,
+                  rotation * maxAngularSpeedRadPerSec
+              );
+
+              // Pass to your swerve subsystem
+              drivetrain.setDesiredState(speeds);
+          },
+          drivetrain
+      )
+  );
+}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
