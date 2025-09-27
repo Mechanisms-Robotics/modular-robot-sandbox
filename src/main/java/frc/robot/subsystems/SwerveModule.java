@@ -1,11 +1,12 @@
 package frc.robot.subsystems;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.reduxrobotics.sensors.canandmag.Canandmag;
-
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -50,9 +51,19 @@ public class SwerveModule {
         steeringMotor.setPosition(STEERING_GEAR_RATIO * encPosition);
     }
 
-    public void setModuleState(SwerveModuleState state) {        
+    public void setModuleState(SwerveModuleState state) {
+        // get the current position of the steering motor and optimize the state
+        // make sure positionOfSteering in [0.0, 1.0)
+        double positionOfSteering = steeringMotor.getPosition().getValueAsDouble() / STEERING_GEAR_RATIO;
+        positionOfSteering -= (long)positionOfSteering;
+        if (positionOfSteering < 0) {
+            // it seems that optimize wants this always between 0 and 1
+            positionOfSteering += 1;
+        }
+        state.optimize(new Rotation2d(positionOfSteering));
+
         // set the position of the steering motor
-        // remeber that angle is the negative of what the motors want, hence the minus
+        // remember that angle is the negative of what the motors want, hence the minus
         double positionInRotations = STEERING_GEAR_RATIO * -state.angle.getDegrees() / 360.0;
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
@@ -73,7 +84,6 @@ public class SwerveModule {
             
             SmartDashboard.putNumber(
                 "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations", positionInRotations);
-            double positionOfSteering = steeringMotor.getPosition().getValueAsDouble() / STEERING_GEAR_RATIO;
             SmartDashboard.putNumber(
                 "Swerve States/" + this.steeringMotorCANId + "/Steering/actual_positionOfSteering", positionOfSteering);
 
