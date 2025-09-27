@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.DrivetrainController;
+import frc.robot.subsystems.PoseEstimator8736;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
@@ -30,6 +32,9 @@ public class RobotContainer {
   public final Drivetrain drivetrain = new Drivetrain(
     frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation
   );
+
+  public final PoseEstimator8736 poseEstimator = new PoseEstimator8736();
+  private final DrivetrainController drivetrainController = new DrivetrainController(poseEstimator);
 
   private static final int CONTROLLER_PORT = 0;
   private final CommandPS4Controller controller = new CommandPS4Controller(CONTROLLER_PORT);
@@ -68,8 +73,9 @@ public class RobotContainer {
                   rotation * MAX_ANGULAR_RAD_PER_SEC
               );
 
-              // Pass to your swerve subsystem
-              drivetrain.setDesiredState(speeds);
+              // Pass to swerve subsystem
+              ChassisSpeeds robotOriented = drivetrainController.fieldToRobotChassisSpeeds(speeds);
+              drivetrain.setDesiredState(robotOriented);
           },
           drivetrain
       )
