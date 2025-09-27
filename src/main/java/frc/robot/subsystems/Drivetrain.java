@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /**
  * STARTUP AND TUNING
  * 
+ * Set module locations in RobotContainer.java
  * Verify all steering encoders are zeroed (gears on the right)
  * Rough in P for drive and steering on blocks
  * Sanity check outputs vs. inputs (do the wheels seem to move correctly?)

@@ -19,10 +19,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  Translation2d frontLeftModuleLocation = new Translation2d(1.0, 1.0);
-  Translation2d frontRightModuleLocation = new Translation2d(1.0, -1.0);
-  Translation2d backLeftModuleLocation = new Translation2d(-1.0, 1.0);
-  Translation2d backRightModuleLocation = new Translation2d(-1.0, -1.0);
+  // Per WPILib documentation +X is forward and +Y is left (oriented to the robot)
+  // Positive rotation is counterclockwise
+  
+  Translation2d frontLeftModuleLocation = new Translation2d(0.33, 0.23);
+  Translation2d frontRightModuleLocation = new Translation2d(0.33, -0.23);
+  Translation2d backLeftModuleLocation = new Translation2d(-0.33, 0.23);
+  Translation2d backRightModuleLocation = new Translation2d(-0.33, -0.23);
 
   public final Drivetrain drivetrain = new Drivetrain(
     frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation
@@ -46,8 +49,8 @@ public class RobotContainer {
       new RunCommand(
           () -> {
               double forward = -controller.getLeftY(); // Negative to match FRC convention
-              double strafe = controller.getLeftX();
-              double rotation = controller.getRightX();
+              double strafe = -controller.getLeftX();
+              double rotation = -controller.getRightX();
 
               // Apply deadbands and scaling
               final double DEADBAND = 0.04;

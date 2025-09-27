@@ -52,7 +52,8 @@ public class SwerveModule {
 
     public void setModuleState(SwerveModuleState state) {        
         // set the position of the steering motor
-        double positionInRotations = STEERING_GEAR_RATIO * state.angle.getDegrees() / 360.0;
+        // remeber that angle is the negative of what the motors want, hence the minus
+        double positionInRotations = STEERING_GEAR_RATIO * -state.angle.getDegrees() / 360.0;
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
 

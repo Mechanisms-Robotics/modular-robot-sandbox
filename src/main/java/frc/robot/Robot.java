@@ -132,8 +132,5 @@ public class Robot extends TimedRobot {
   @Override
   //double radiansPerSecond = 0.0;
   public void simulationPeriodic() {
-    ChassisSpeeds speeds = new ChassisSpeeds(
-      0.0, 0., 1.0);
-    this.m_robotContainer.drivetrain.setDesiredState(speeds);
   }
 }
