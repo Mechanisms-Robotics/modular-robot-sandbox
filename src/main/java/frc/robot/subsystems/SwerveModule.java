@@ -64,16 +64,19 @@ public class SwerveModule {
 
         // set the position of the steering motor
         // remember that angle is the negative of what the motors want, hence the minus
-        double positionInRotations = STEERING_GEAR_RATIO * -state.angle.getDegrees() / 360.0;
+        double positionInRotations = -STEERING_GEAR_RATIO*state.angle.getDegrees()/360.0;
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
+
+        // calculate a speed scale factor (cosine compensation)
+        double scaleFactor = state.angle.minus(new Rotation2d(-2*Math.PI*positionOfSteering)).getCos();
 
         // set the speed of the drive motor
         double FUDGE_FACTOR = 1.6; // TODO: What is wrong?
         double wheelCircumference = 2 * Math.PI * WHEEL_RADIUS_METERS;
         double wheelRotationsPerSecond = state.speedMetersPerSecond / wheelCircumference;
         double motorRotationsPerSecond = wheelRotationsPerSecond * DRIVE_GEAR_RATIO * FUDGE_FACTOR;
-        ControlRequest driveControlRequest = new VelocityDutyCycle(motorRotationsPerSecond);
+        ControlRequest driveControlRequest = new VelocityDutyCycle(motorRotationsPerSecond*scaleFactor);
         this.driveMotor.setControl(driveControlRequest);
 
         // this is probably not the best place for this code, but this is a sandbox project
