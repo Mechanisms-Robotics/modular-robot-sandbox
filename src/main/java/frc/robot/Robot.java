@@ -67,7 +67,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-      // ****** TEMPORARY CODE TO TEST DRIVETRAIN
+      // ****** TEMPORARY CODE TO TEST DRIVETRAIN (causes output to shuffleboard)
       m_robotContainer.drivetrain.setDesiredState(new ChassisSpeeds(
         0.0, 0.0, 0.0));
 
