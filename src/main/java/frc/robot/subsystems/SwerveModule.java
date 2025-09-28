@@ -50,9 +50,9 @@ public class SwerveModule {
         double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
         steeringMotor.setPosition(STEERING_GEAR_RATIO*encPosition);
         // Untested code TODO test this Sunday morning
-        //double positionInRotations = STEERING_GEAR_RATIO*encPosition;
-        //ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
-        //this.steeringMotor.setControl(steeringControlRequest);
+        double positionInRotations = STEERING_GEAR_RATIO*encPosition;
+        ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
+        this.steeringMotor.setControl(steeringControlRequest);
     }
 
     public void setModuleState(SwerveModuleState state) {
