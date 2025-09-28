@@ -32,10 +32,17 @@ public class SwerveModule {
         this.encoder = new Canandmag(encoderCANId);
 
         var steeringConfigs = new TalonFXConfiguration();
-        steeringConfigs.Slot0.kP = 0.04;
+        steeringConfigs.Slot0.kP = 0.08;
         steeringConfigs.Slot0.kI = 0.0;
         steeringConfigs.Slot0.kD = 0.0;
         steeringConfigs.Slot0.kV = 0.0; // feedforward term
+
+        //experimenting with motion magic to smooth steering
+       /*  var motionMagicConfigs = steeringConfigs.MotionMagic; 
+        motionMagicConfigs.MotionMagicCruiseVelocity = 500; //Target cruise velocity of 500rps
+        motionMagicConfigs.MotionMagicAcceleration = 1000; //Target acceleration of 1000rps/s (0.5 sec)
+        motionMagicConfigs.MotionMagicJerk = 0; //Target jerk of 0 rps/s/s (0 sec)  */
+
         this.steeringMotor.getConfigurator().apply(steeringConfigs);
 
         var driveConfigs = new TalonFXConfiguration();
@@ -58,22 +65,30 @@ public class SwerveModule {
     public void setModuleState(SwerveModuleState state) {
         // get the current position of the steering motor and optimize the state
         // make sure positionOfSteering in [0.0, 1.0)
-        double positionOfSteering = steeringMotor.getPosition().getValueAsDouble() / STEERING_GEAR_RATIO;
-        positionOfSteering -= (long)positionOfSteering;
-        if (positionOfSteering < 0) {
-            // it seems that optimize wants this always between 0 and 1
-            positionOfSteering += 1;
-        }
-        state.optimize(new Rotation2d(positionOfSteering));
+        double positionOfSteeringRad = 2*Math.PI*steeringMotor.getPosition().getValueAsDouble() / STEERING_GEAR_RATIO;
+        // positionOfSteering -= (long)positionOfSteering;
+        // if (positionOfSteering < 0) {
+        //     // it seems that optimize wants this always between 0 and 1
+        //     positionOfSteering += 1;
+        // }
+
+        SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations_PreOptimize", state.angle.getDegrees());
+        SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/Steering/positionOfSteering", new Rotation2d(positionOfSteeringRad).getDegrees());
+        state.optimize(new Rotation2d(-positionOfSteeringRad));
 
         // set the position of the steering motor
         // remember that angle is the negative of what the motors want, hence the minus
         double positionInRotations = -STEERING_GEAR_RATIO*state.angle.getDegrees()/360.0;
+        SmartDashboard.putNumber(
+                "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations_PostDivide360", state.angle.getDegrees());
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
 
         // calculate a speed scale factor (cosine compensation)
-        double scaleFactor = state.angle.minus(new Rotation2d(-2*Math.PI*positionOfSteering)).getCos();
+        double scaleFactor = state.angle.minus(new Rotation2d(-positionOfSteeringRad)).getCos();
+        
 
         // set the speed of the drive motor
         double FUDGE_FACTOR = 1.6; // TODO: What is wrong?
@@ -92,7 +107,7 @@ public class SwerveModule {
             SmartDashboard.putNumber(
                 "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations", positionInRotations);
             SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/Steering/actual_positionOfSteering", positionOfSteering);
+                "Swerve States/" + this.steeringMotorCANId + "/Steering/actual_positionOfSteering", positionOfSteeringRad);
 
             double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
             SmartDashboard.putNumber(
