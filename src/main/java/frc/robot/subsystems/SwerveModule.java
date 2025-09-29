@@ -32,7 +32,7 @@ public class SwerveModule {
         this.encoder = new Canandmag(encoderCANId);
 
         var steeringConfigs = new TalonFXConfiguration();
-        steeringConfigs.Slot0.kP = 0.08;
+        steeringConfigs.Slot0.kP = 0.16;
         steeringConfigs.Slot0.kI = 0.0;
         steeringConfigs.Slot0.kD = 0.0;
         steeringConfigs.Slot0.kV = 0.0; // feedforward term

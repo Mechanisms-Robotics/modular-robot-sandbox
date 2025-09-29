@@ -57,7 +57,7 @@ public class RobotContainer {
         poseEstimator.zeroGyro();
       }
     ));
-    
+
     drivetrain.setDefaultCommand(
       new RunCommand(
           () -> {
@@ -72,13 +72,13 @@ public class RobotContainer {
               rotation = Math.abs(rotation) > DEADBAND ? rotation : 0.0;
 
               // Scale to max speed
-              double MAX_SPEED_METERS_PER_SEC = 1.0; // Set your max speed
-              double MAX_ANGULAR_RAD_PER_SEC = Math.PI; // Set your max rotation speed
+              double MAX_SPEED_METERS_PER_SEC = 8.0; // Set your max speed
+              double MAX_ANGULAR_RAD_PER_SEC = 3*Math.PI; // Set your max rotation speed
 
               ChassisSpeeds speeds = new ChassisSpeeds(
-                  forward * MAX_SPEED_METERS_PER_SEC,
-                  strafe * MAX_SPEED_METERS_PER_SEC,
-                  rotation * MAX_ANGULAR_RAD_PER_SEC
+                  forward *forward*forward* MAX_SPEED_METERS_PER_SEC,
+                  strafe * strafe*strafe* MAX_SPEED_METERS_PER_SEC,
+                  rotation * rotation*rotation*MAX_ANGULAR_RAD_PER_SEC
               );
 
               // Pass to swerve subsystem
