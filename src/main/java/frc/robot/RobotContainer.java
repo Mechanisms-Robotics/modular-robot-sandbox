@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.PS4Controller.Button;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
