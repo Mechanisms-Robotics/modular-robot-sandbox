@@ -54,9 +54,11 @@ public class SwerveModule {
     }
 
     public void setModuleToEncoder() {
+        // set the internal encoder based on the absolution position of the external encoder
         double encPosition = encoder.getAbsPosition(); // 0.0 to 1.0, inclusive, increasing counterclockwise
         steeringMotor.setPosition(STEERING_GEAR_RATIO*encPosition);
-        // Untested code TODO test this Sunday morning
+
+        // set the steering motor to the current position so it doesn't try to move
         double positionInRotations = STEERING_GEAR_RATIO*encPosition;
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
@@ -66,32 +68,19 @@ public class SwerveModule {
         // get the current position of the steering motor and optimize the state
         // make sure positionOfSteering in [0.0, 1.0)
         double positionOfSteeringRad = 2*Math.PI*steeringMotor.getPosition().getValueAsDouble() / STEERING_GEAR_RATIO;
-        // positionOfSteering -= (long)positionOfSteering;
-        // if (positionOfSteering < 0) {
-        //     // it seems that optimize wants this always between 0 and 1
-        //     positionOfSteering += 1;
-        // }
-
-        SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations_PreOptimize", state.angle.getDegrees());
-        SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/Steering/positionOfSteering", new Rotation2d(positionOfSteeringRad).getDegrees());
         state.optimize(new Rotation2d(-positionOfSteeringRad));
 
         // set the position of the steering motor
         // remember that angle is the negative of what the motors want, hence the minus
         double positionInRotations = -STEERING_GEAR_RATIO*state.angle.getDegrees()/360.0;
-        SmartDashboard.putNumber(
-                "Swerve States/" + this.steeringMotorCANId + "/Steering/demand_positionInRotations_PostDivide360", state.angle.getDegrees());
         ControlRequest steeringControlRequest = new PositionDutyCycle(positionInRotations);
         this.steeringMotor.setControl(steeringControlRequest);
 
         // calculate a speed scale factor (cosine compensation)
         double scaleFactor = state.angle.minus(new Rotation2d(-positionOfSteeringRad)).getCos();
         
-
         // set the speed of the drive motor
-        double FUDGE_FACTOR = 1.6; // TODO: What is wrong?
+        final double FUDGE_FACTOR = 1.6; // TODO: Measure and change to EFFECTIVE_GEAR_RATIO, eliminating all the other constants here
         double wheelCircumference = 2 * Math.PI * WHEEL_RADIUS_METERS;
         double wheelRotationsPerSecond = state.speedMetersPerSecond / wheelCircumference;
         double motorRotationsPerSecond = wheelRotationsPerSecond * DRIVE_GEAR_RATIO * FUDGE_FACTOR;
