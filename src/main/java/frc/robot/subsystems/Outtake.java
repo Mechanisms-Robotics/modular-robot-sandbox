@@ -16,8 +16,12 @@ public class Outtake extends SubsystemBase {
     }
 
     //TODO: add a set method to make the motor go brrr and stop
-    //TODO: add an outtake command 
-    //TODO: add a stop outtake command
+    // public void outtake() {
+    //     motor.set(1);
+    // }
+    // public void stop() {
+    //     motor.set(0);
+    // }
     
     @Override
     public void periodic() {
