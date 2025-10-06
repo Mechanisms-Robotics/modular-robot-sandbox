@@ -9,9 +9,9 @@ import com.reduxrobotics.sensors.canandmag.Canandmag;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 
 public class SwerveModule {
-    private static final boolean OUTPUT_TO_SMART_DASH = true;
 
     private static final double WHEEL_RADIUS_METERS = 0.0508; // from the internet
     private static final double STEERING_GEAR_RATIO = 150.0/7.0; // from SDS website
@@ -89,7 +89,7 @@ public class SwerveModule {
 
         // this is probably not the best place for this code, but this is a sandbox project
 
-        if (OUTPUT_TO_SMART_DASH) {
+        if (Constants.OUTPUT_TO_SMART_DASH) {
             SmartDashboard.putNumber(
                 "Swerve States/" + this.steeringMotorCANId + "/Drive/demand_wheelRotationsPerSecond", wheelRotationsPerSecond);
             

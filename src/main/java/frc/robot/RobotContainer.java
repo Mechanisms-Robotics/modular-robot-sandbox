@@ -8,6 +8,7 @@ import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainController;
 import frc.robot.subsystems.PoseEstimator8736;
+import frc.robot.subsystems.Outtake;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -39,6 +40,8 @@ public class RobotContainer {
   public final PoseEstimator8736 poseEstimator = new PoseEstimator8736();
   private final DrivetrainController drivetrainController = new DrivetrainController(poseEstimator);
 
+  private final Outtake outtake = new Outtake();
+
   private static final int CONTROLLER_PORT = 0;
   private final CommandPS4Controller controller = new CommandPS4Controller(CONTROLLER_PORT);
   
@@ -54,11 +57,16 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    // L3 button: zero the gyro
     controller.L3().onTrue(new InstantCommand(
       () -> {
         poseEstimator.zeroGyro();
       }
     ));
+
+    // R1 button: Run outtake while depressed. Stop outtake when released.
+    controller.R1().whileTrue(outtake.runOuttakeCommand());
+    controller.R1().onFalse(outtake.stopOuttakeCommand());
 
     drivetrain.setDefaultCommand(
       new RunCommand(
