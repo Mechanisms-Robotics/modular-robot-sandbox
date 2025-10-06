@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class Outtake extends SubsystemBase {
 
@@ -16,11 +20,12 @@ public class Outtake extends SubsystemBase {
     }
 
     //TODO: add a set method to make the motor go brrr and stop
-    public void outtake() {
-        motor.set(1);
+    public static Command startOuttake() {
+        return runOnce(motor.setPower(1));
     }
-    public void stop() {
-        motor.set(0);
+   
+    public static Command stopOuttake() {
+        return runOnce(motor.setPower(0));
     }
     
     @Override
