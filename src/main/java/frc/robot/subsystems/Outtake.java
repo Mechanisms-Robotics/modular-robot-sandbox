@@ -21,11 +21,11 @@ public class Outtake extends SubsystemBase {
 
     //TODO: add a set method to make the motor go brrr and stop
 
-    public static Command startOuttake() {
+    public final Command startOuttake() {
         return new InstantCommand(() -> motor.setVelocity(1));
     }
    
-    public static Command stopOuttake() {
+    public final Command stopOuttake() {
         return new InstantCommand(() -> motor.setVelocity(0));
     }
     
