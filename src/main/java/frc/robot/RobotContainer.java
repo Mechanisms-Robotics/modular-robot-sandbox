@@ -57,21 +57,15 @@ public class RobotContainer {
 
   private void configureBindings() {
 
+    //bindings for outtake
+    controller.R2().onTrue(outtake.startOuttake());
+    controller.R2().onFalse(outtake.stopOuttake());
+    controller.L2().onTrue(outtake.reverseOuttake());
+    controller.L2().onFalse(outtake.stopOuttake());
+
     controller.L3().onTrue(new InstantCommand(
       () -> {
         poseEstimator.zeroGyro();
-      }
-    ));
-
-    controller.R1().onTrue(new InstantCommand(
-      () -> {
-        outtake.startOuttake(outtake).schedule();
-      }
-    ));
-
-    controller.R1().onFalse(new InstantCommand(
-      () -> {
-        outtake.stopOuttake(outtake).schedule();
       }
     ));
 
