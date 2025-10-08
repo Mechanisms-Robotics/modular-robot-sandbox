@@ -6,9 +6,7 @@ import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class Outtake extends SubsystemBase {
 
@@ -16,8 +14,8 @@ public class Outtake extends SubsystemBase {
     private static final int OUTTAKE_MOTOR_CAN_ID = 20;
 
     //referance values for duty cycle between -1 and 1
-    private static final double OUTTAKE_POWER = 0.2; //referance for duty cycle
-    private static final double REVERSE_OUTTAKE_POWER = -0.1; //referance for duty cycle
+    private static final double OUTTAKE_POWER = 1; //referance for duty cycle
+    private static final double REVERSE_OUTTAKE_POWER = -0.5; //referance for duty cycle
 
     private static final SparkMax motor = new SparkMax(OUTTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
 
@@ -46,6 +44,7 @@ public class Outtake extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+        SmartDashboard.putNumber("Outtake/position", motor.getAbsoluteEncoder().getPosition());
     }
 
 }
