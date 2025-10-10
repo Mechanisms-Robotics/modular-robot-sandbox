@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.DrivetrainController;
+import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.PoseEstimator8736;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +40,8 @@ public class RobotContainer {
   public final PoseEstimator8736 poseEstimator = new PoseEstimator8736();
   private final DrivetrainController drivetrainController = new DrivetrainController(poseEstimator);
 
+  public final Outtake  outtake = new Outtake();
+
   private static final int CONTROLLER_PORT = 0;
   private final CommandPS4Controller controller = new CommandPS4Controller(CONTROLLER_PORT);
   
@@ -53,6 +56,12 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
+
+    //bindings for outtake
+    controller.R2().onTrue(outtake.startOuttake());
+    controller.R2().onFalse(outtake.stopOuttake());
+    controller.L2().onTrue(outtake.reverseOuttake());
+    controller.L2().onFalse(outtake.stopOuttake());
 
     controller.L3().onTrue(new InstantCommand(
       () -> {
