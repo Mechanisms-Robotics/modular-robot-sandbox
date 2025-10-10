@@ -21,7 +21,11 @@ public class Outtake extends SubsystemBase {
 
     /** Creates a new Outtake. */
     public Outtake() {
+        // output a value from SparkMax to make sure it is online
+        SmartDashboard.putNumber("Outtake/debug/initialPosition", motor.getAbsoluteEncoder().getPosition());
 
+        // initialize motor to zero power
+        setPower(0);
     }
 
     public final void setPower(double desiredPower) {
@@ -44,7 +48,6 @@ public class Outtake extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        SmartDashboard.putNumber("Outtake/position", motor.getAbsoluteEncoder().getPosition());
     }
 
 }
