@@ -108,7 +108,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // drive forward auto will be run in autonomous
-    return Autos.driveForwardAuto(drivetrain);
+    return Autos.driveForwardAuto(drivetrain, outtake);
   }
 
   

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Outtake;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,8 +18,8 @@ public final class Autos {
     return Commands.sequence(subsystem.exampleMethodCommand(), new ExampleCommand(subsystem));
   }
 
-  public static Command driveForwardAuto(Drivetrain drivetrain) {
-    // Drive forward at a constant speed for 2 seconds, then stop
+  public static Command driveForwardAuto(Drivetrain drivetrain, Outtake outtake) {
+    // Drive forward at a constant speed for 2 seconds, stop, outtake coral for 2 seconds, then stop
     return Commands.sequence(
         new RunCommand(
             () -> drivetrain.setDesiredState(new ChassisSpeeds(1.0, 0.0, 0.0)), // 1 m/s forward
@@ -27,6 +28,12 @@ public final class Autos {
         new InstantCommand(
             () -> drivetrain.setDesiredState(new ChassisSpeeds(0.0, 0.0, 0.0)), // Stop the robot
             drivetrain
+        ),
+        new InstantCommand(
+            () -> outtake.startOuttake()
+        ).withTimeout(2),
+        new InstantCommand(
+            () -> outtake.stopOuttake()
         )
     );
 }
