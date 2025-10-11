@@ -7,6 +7,10 @@ public class PoseEstimator8736 {
     private final Canandgyro gyro = new Canandgyro(GYRO_CAN_ID);
 
     public void zeroGyro() {
+        gyro.setYaw(0.0);
+    }
+
+    public void reverseZeroGyro() {
         gyro.setYaw(0.5);
     }
 

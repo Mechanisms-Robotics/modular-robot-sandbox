@@ -65,7 +65,7 @@ public class RobotContainer {
 
     controller.L3().onTrue(new InstantCommand(
       () -> {
-        poseEstimator.zeroGyro();
+        poseEstimator.reverseZeroGyro();
       }
     ));
 
