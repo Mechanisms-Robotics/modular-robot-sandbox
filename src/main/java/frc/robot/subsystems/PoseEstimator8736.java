@@ -10,6 +10,10 @@ public class PoseEstimator8736 {
         gyro.setYaw(0.0);
     }
 
+    public void zeroGyroReversed() {
+        gyro.setYaw(0.5);
+    }
+
     // TODO: Think about this because it may be better as a Pose2D or whatever....
     public double getYaw() {
         return gyro.getYaw();

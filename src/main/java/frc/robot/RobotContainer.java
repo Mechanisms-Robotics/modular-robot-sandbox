@@ -15,40 +15,48 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.PS4Controller;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
   // Per WPILib documentation +X is forward and +Y is left (oriented to the robot)
   // Positive rotation is counterclockwise
-  
+
   Translation2d frontLeftModuleLocation = new Translation2d(0.33, 0.23);
   Translation2d frontRightModuleLocation = new Translation2d(0.33, -0.23);
   Translation2d backLeftModuleLocation = new Translation2d(-0.33, 0.23);
   Translation2d backRightModuleLocation = new Translation2d(-0.33, -0.23);
 
   public final Drivetrain drivetrain = new Drivetrain(
-    frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation
-  );
+      frontLeftModuleLocation, frontRightModuleLocation, backLeftModuleLocation, backRightModuleLocation);
 
   public final PoseEstimator8736 poseEstimator = new PoseEstimator8736();
   private final DrivetrainController drivetrainController = new DrivetrainController(poseEstimator);
 
-  public final Outtake  outtake = new Outtake();
+  public final Outtake outtake = new Outtake();
 
   private static final int CONTROLLER_PORT = 0;
   private final CommandPS4Controller controller = new CommandPS4Controller(CONTROLLER_PORT);
-  
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    // Send autos to Network Tables (so it can be viewed in Shuffleboard)
+    createAutos();
   }
 
   public void setSwerveModulesToEncoders() {
@@ -57,21 +65,20 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    //bindings for outtake
+    // bindings for outtake
     controller.R2().onTrue(outtake.startOuttake());
     controller.R2().onFalse(outtake.stopOuttake());
     controller.L2().onTrue(outtake.reverseOuttake());
     controller.L2().onFalse(outtake.stopOuttake());
 
-    controller.L3().onTrue(new InstantCommand(
-      () -> {
-        poseEstimator.zeroGyro();
-      }
-    ));
+    controller.triangle().onTrue(new InstantCommand(
+        () -> {
+          poseEstimator.zeroGyro();
+        }));
 
     drivetrain.setDefaultCommand(
-      new RunCommand(
-          () -> {
+        new RunCommand(
+            () -> {
               double forward = -controller.getLeftY(); // Negative to match FRC convention
               double strafe = -controller.getLeftX();
               double rotation = -controller.getRightX();
@@ -84,22 +91,26 @@ public class RobotContainer {
 
               // Scale to max speed
               double MAX_SPEED_METERS_PER_SEC = 8.0; // Set your max speed
-              double MAX_ANGULAR_RAD_PER_SEC = 3*Math.PI; // Set your max rotation speed
+              double MAX_ANGULAR_RAD_PER_SEC = 3 * Math.PI; // Set your max rotation speed
 
               ChassisSpeeds speeds = new ChassisSpeeds(
-                  forward *forward*forward* MAX_SPEED_METERS_PER_SEC,
-                  strafe * strafe*strafe* MAX_SPEED_METERS_PER_SEC,
-                  rotation * rotation*rotation*MAX_ANGULAR_RAD_PER_SEC
-              );
+                  forward * forward * forward * MAX_SPEED_METERS_PER_SEC,
+                  strafe * strafe * strafe * MAX_SPEED_METERS_PER_SEC,
+                  rotation * rotation * rotation * MAX_ANGULAR_RAD_PER_SEC);
 
               // Pass to swerve subsystem
               ChassisSpeeds robotOriented = drivetrainController.fieldToRobotChassisSpeeds(speeds);
               drivetrain.setDesiredState(robotOriented);
-          },
-          drivetrain
-      )
-  );
-}
+            },
+            drivetrain));
+  }
+
+  private void createAutos() {
+    m_autoChooser.setDefaultOption("Timed Leave", Autos.driveForwardAuto(drivetrain, poseEstimator));
+    m_autoChooser.addOption("Drive Forward Place", Autos.driveForwardPlace(drivetrain, outtake, poseEstimator));
+
+    SmartDashboard.putData("Auto Chooser", m_autoChooser);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -108,8 +119,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // drive forward auto will be run in autonomous
-    return Autos.driveForwardAuto(drivetrain);
+    return m_autoChooser.getSelected();
   }
 
-  
 }
