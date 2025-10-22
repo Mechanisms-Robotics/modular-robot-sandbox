@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+
 
 public class Outtake extends SubsystemBase {
 
@@ -39,12 +41,12 @@ public class Outtake extends SubsystemBase {
 
     public final Command startOuttake() {
         return Commands.sequence(
-            new InstantCommand(
+            new RunCommand(
                 () -> this.setPower(OUTTAKE_POWER), this
-                ).withTimeout(1)
-            // new InstantCommand(
-            //     () -> this.setPower(0), this
-            //     )
+                ).withTimeout(.2),
+            new InstantCommand(
+                () -> this.setPower(0), this
+                )
         );
     }
 
