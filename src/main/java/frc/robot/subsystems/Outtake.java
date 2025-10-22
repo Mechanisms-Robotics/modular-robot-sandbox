@@ -2,10 +2,14 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import javax.sound.midi.Sequence;
+
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class Outtake extends SubsystemBase {
@@ -34,7 +38,14 @@ public class Outtake extends SubsystemBase {
     }
 
     public final Command startOuttake() {
-        return new InstantCommand(() -> this.setPower(OUTTAKE_POWER), this);
+        return Commands.sequence(
+            new InstantCommand(
+                () -> this.setPower(OUTTAKE_POWER), this
+                ).withTimeout(1)
+            // new InstantCommand(
+            //     () -> this.setPower(0), this
+            //     )
+        );
     }
 
     public final Command reverseOuttake() {
